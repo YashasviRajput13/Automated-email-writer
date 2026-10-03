@@ -9,19 +9,40 @@ lerna-debug.log*
 
 node_modules/
 dist/
+target/
 .env
 .env.*
 !.env.example
 dist-ssr
 *.local
+.mvn/wrapper/maven-wrapper.jar
 
 # Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.iml
+
+# Java and IDE metadata
+!**/src/main/**/target/
+!**/src/test/**/target/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+.apt_generated
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
