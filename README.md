@@ -1,378 +1,223 @@
-# AI Email Writer Assistant
 
-AI-powered email reply generation for Gmail, backed by a Spring Boot REST API and Groq's OpenAI-compatible Chat Completions API.
+# ✉️ AI Email Writer
 
-The project provides an AI-powered email writing workflow that can generate contextual email replies directly inside Gmail through a Chrome Extension, while also providing a separate React web interface.
-
----
-
-## Overview
-
-AI Email Writer Assistant helps users generate professional and contextual email replies without manually writing the response from scratch.
-
-The system consists of three main components:
-
-1. **Spring Boot Backend** — Handles API requests and communicates securely with Groq AI.
-2. **React Frontend** — Provides a standalone web interface for generating email replies.
-3. **Chrome Extension** — Integrates directly with Gmail and automatically inserts AI-generated replies into the Gmail compose box.
-
-The Groq API key is kept securely on the backend and is never exposed to the React frontend or Chrome Extension.
+> An AI-powered email assistant that generates professional email replies using Groq AI and integrates directly with Gmail through a Chrome Extension.
 
 ---
 
-# Problem Statement
+## 🚀 Overview
 
-Writing email replies repeatedly can be time-consuming, especially when users need to respond to multiple professional emails.
+AI Email Writer is an AI-powered application that helps users generate email replies automatically.
 
-Users often have to:
+Instead of manually writing a response, the user can:
 
-- Read the email
-- Understand the context
-- Decide the appropriate tone
-- Write the response
-- Copy and paste the response into Gmail
+1. Open an email in Gmail.
+2. Click the **✨ AI Reply** button.
+3. The extension extracts the email content.
+4. The content is sent to the Spring Boot backend.
+5. The backend creates an AI prompt.
+6. Groq generates the reply.
+7. The generated response is returned to the extension.
+8. The reply is automatically inserted into the Gmail compose box.
 
-This project automates the response-generation part of the workflow while keeping the user in control of the final email.
+The project also includes a standalone **React web interface** where users can paste an email and generate a reply without using Gmail.
 
 ---
 
-# Solution
+# 🎯 Problem Statement
 
-The AI Email Writer Assistant allows users to generate an email reply using AI.
+Writing email replies repeatedly can be time-consuming, especially when users need to maintain a professional tone.
 
-For Gmail users, the process is:
+For example:
+
+- Professional emails
+- Internship emails
+- Business communication
+- Customer responses
+- College communication
+- Follow-up emails
+
+The goal of this project is to reduce the time required to write such responses by using AI to generate context-aware replies.
+
+---
+
+# 💡 Solution
+
+The system provides an AI-powered email generation workflow.
+
+Instead of:
+
+```text
+Read Email
+    ↓
+Think About Response
+    ↓
+Write Response
+    ↓
+Edit Response
+    ↓
+Send
+````
+
+The system provides:
 
 ```text
 Open Email
-     ↓
-Click "AI Reply"
-     ↓
-Chrome Extension
-     ↓
-Extract Email Content
-     ↓
-HTTP POST Request
-     ↓
-Spring Boot REST API
-     ↓
-Groq AI
-     ↓
-Generated Reply
-     ↓
-Spring Boot Response
-     ↓
-Chrome Extension
-     ↓
-Gmail Compose Box
+    ↓
+Click AI Reply
+    ↓
+AI Generates Response
+    ↓
+Review Response
+    ↓
+Send
+```
 
-The user can then review, edit, and send the generated email.
+---
 
-Complete System Architecture
-                         ┌──────────────────────┐
-                         │        Gmail         │
-                         │                      │
-                         │   Incoming Email     │
-                         └──────────┬───────────┘
+# ✨ Features
+
+* 🤖 AI-powered email reply generation
+* 📧 Gmail integration
+* ✨ AI Reply button inside Gmail
+* 🎯 Professional email generation
+* 🎨 Multiple tone support
+* ⚡ Fast AI response generation
+* 🌐 Standalone React web interface
+* 🔐 Backend-based API key protection
+* 🐳 Dockerized Spring Boot backend
+* ☁️ Backend deployed on Render
+* 🔄 Dynamic Gmail UI detection using `MutationObserver`
+* 📋 Automatic insertion of generated replies into Gmail
+
+---
+
+# 🏗️ Complete System Architecture
+
+The project consists of four major components:
+
+```text
+                         ┌─────────────────────┐
+                         │       USER          │
+                         └──────────┬──────────┘
                                     │
-                                    │ Email Content
-                                    ▼
-                         ┌──────────────────────┐
-                         │   Chrome Extension   │
-                         │                      │
-                         │  AI Reply Button     │
-                         │  MutationObserver    │
-                         │  Gmail DOM Access    │
-                         └──────────┬───────────┘
+                         Opens Gmail / Web App
                                     │
-                                    │ HTTPS POST
-                                    │ /api/email/generate
-                                    ▼
-                         ┌──────────────────────┐
-                         │   Spring Boot API    │
-                         │                      │
-                         │ Controller           │
-                         │ Service              │
-                         │ WebClient            │
-                         └──────────┬───────────┘
-                                    │
-                                    │ Prompt + Email
-                                    ▼
-                         ┌──────────────────────┐
-                         │       Groq AI        │
-                         │                      │
-                         │ OpenAI-Compatible    │
-                         │ Chat Completions API │
-                         └──────────┬───────────┘
-                                    │
-                                    │ Generated Reply
-                                    ▼
-                         ┌──────────────────────┐
-                         │   Spring Boot API    │
-                         └──────────┬───────────┘
-                                    │
-                                    │ Response
-                                    ▼
-                         ┌──────────────────────┐
-                         │   Chrome Extension   │
-                         └──────────┬───────────┘
-                                    │
-                                    │ Insert Reply
-                                    ▼
-                         ┌──────────────────────┐
-                         │        Gmail         │
-                         │                      │
-                         │  Compose Box         │
-                         │  + AI Generated Text │
-                         └──────────────────────┘
-Project Architecture
+                    ┌───────────────┴───────────────┐
+                    │                               │
+                    ▼                               ▼
+          ┌─────────────────┐             ┌─────────────────┐
+          │  Gmail Website  │             │  React Web App  │
+          └────────┬────────┘             └────────┬────────┘
+                   │                               │
+                   ▼                               │
+          ┌─────────────────┐                      │
+          │ Chrome Extension│                      │
+          └────────┬────────┘                      │
+                   │                               │
+                   └───────────────┬───────────────┘
+                                   │
+                              HTTPS / REST
+                                   │
+                                   ▼
+                       ┌─────────────────────┐
+                       │   Spring Boot API   │
+                       │      Backend        │
+                       └──────────┬──────────┘
+                                  │
+                                  ▼
+                       ┌─────────────────────┐
+                       │ Email Generator     │
+                       │ Service Layer       │
+                       └──────────┬──────────┘
+                                  │
+                                  │ API Request
+                                  ▼
+                       ┌─────────────────────┐
+                       │      Groq API      │
+                       │    AI Model         │
+                       └──────────┬──────────┘
+                                  │
+                                  │ Generated Reply
+                                  ▼
+                       ┌─────────────────────┐
+                       │   Spring Boot API   │
+                       └──────────┬──────────┘
+                                  │
+                                  ▼
+                         Chrome Extension
+                                  │
+                                  ▼
+                         Gmail Compose Box
+```
 
-This repository follows a monorepo structure:
+---
 
-Automated-email-writer/
-│
-├── spring-boot-backend/
-│   ├── .mvn/
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   │   └── com/
-│   │   │   │       └── email/
-│   │   │   │           └── writer/
-│   │   │   │               ├── EmailWriterSbApplication.java
-│   │   │   │               ├── HomeController.java
-│   │   │   │               └── app/
-│   │   │   │                   ├── EmailGeneratorController.java
-│   │   │   │                   ├── EmailGeneratorService.java
-│   │   │   │                   ├── EmailRequest.java
-│   │   │   │                   └── WebClientConfig.java
-│   │   │   └── resources/
-│   │   │       └── application.properties
-│   │   └── test/
-│   ├── Dockerfile
-│   ├── mvnw
-│   ├── mvnw.cmd
-│   └── pom.xml
-│
-├── react-frontend/
-│   ├── public/
-│   ├── src/
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── vite.config.js
-│   └── index.html
-│
-├── chrome-extension/
-│   ├── icons/
-│   │   └── logo.png
-│   ├── content.js
-│   ├── content.css
-│   └── manifest.json
-│
-├── .gitignore
-├── .gitattributes
-└── README.md
-1. Spring Boot Backend
+# 🔄 Gmail Extension Architecture
 
-The Spring Boot backend is the central server-side component of the application.
+The Gmail integration works using a Chrome Extension.
 
-It receives email content and tone information from the client, builds the AI request, communicates with Groq, and returns the generated response.
+```text
+                    GMAIL
+                      │
+                      │
+                      ▼
+              Content Script
+                content.js
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+          ▼                       ▼
+   Detect Compose            Extract Email
+   Window                    Content
+          │                       │
+          └───────────┬───────────┘
+                      │
+                      ▼
+                AI Reply Button
+                      │
+                  User Click
+                      │
+                      ▼
+                fetch() POST
+                      │
+                      ▼
+             Spring Boot API
+                      │
+                      ▼
+                  Groq AI
+                      │
+                      ▼
+              Generated Reply
+                      │
+                      ▼
+              content.js
+                      │
+                      ▼
+             Gmail Compose Box
+```
 
-Backend Responsibilities
-Expose REST API
-Receive email content
-Receive requested tone
-Construct AI prompt
-Communicate with Groq
-Handle API errors
-Return generated email reply
-Keep Groq credentials secure
-Support frontend and Chrome Extension clients
-Backend Architecture
-Client
-  │
-  │ POST /api/email/generate
-  ▼
-EmailGeneratorController
-  │
-  ▼
-EmailGeneratorService
-  │
-  ▼
-WebClient
-  │
-  ▼
-Groq API
-  │
-  ▼
-Generated Response
-  │
-  ▼
-EmailGeneratorService
-  │
-  ▼
-EmailGeneratorController
-  │
-  ▼
-Client
-Backend API
-Generate Email Reply
-Endpoint
-POST /api/email/generate
-Local URL
-http://localhost:8080/api/email/generate
-Production URL
-https://automated-email-writer.onrender.com/api/email/generate
-Request
-{
-  "emailContent": "Hello, thank you for reaching out to us.",
-  "tone": "friendly"
-}
-Parameters
-Parameter	Type	Description
-emailContent	String	Original email content
-tone	String	Desired tone of the reply
-Example Response
-Thank you for reaching out. I really appreciate your message and look forward to discussing this further.
+---
 
-The response is returned as plain text.
+# 🧩 Component Architecture
 
-Supported Tones
+## 1. Chrome Extension
 
-The React frontend currently supports:
+The Chrome Extension is responsible for integrating the AI functionality directly into Gmail.
 
-Professional
-Casual
-Friendly
+Main responsibilities:
 
-The Chrome Extension currently sends:
+* Detect Gmail compose windows
+* Inject the AI Reply button
+* Extract email content
+* Send requests to the backend
+* Receive AI-generated responses
+* Insert the generated reply into Gmail
 
-professional
+Main files:
 
-as the default tone.
-
-Groq AI Integration
-
-The backend communicates with Groq using its OpenAI-compatible Chat Completions API.
-
-Configuration:
-
-groq.api.url=${GROQ_API_URL:https://api.groq.com/openai/v1/chat/completions}
-groq.api.key=${GROQ_API_KEY:}
-groq.api.model=${GROQ_MODEL:openai/gpt-oss-20b}
-
-The API key is provided through an environment variable.
-
-GROQ_API_KEY
-
-The key is never stored in:
-
-React frontend
-Chrome Extension
-GitHub repository
-Client-side JavaScript
-2. Chrome Extension
-
-The Chrome Extension provides direct Gmail integration.
-
-It adds an:
-
-✨ AI Reply
-
-button to the Gmail compose interface.
-
-The extension detects Gmail's dynamically rendered compose interface and injects the AI Reply button.
-
-Chrome Extension Architecture
-Gmail
-  │
-  ▼
-MutationObserver
-  │
-  ▼
-Detect Compose Window
-  │
-  ▼
-Inject AI Reply Button
-  │
-  ▼
-User Clicks AI Reply
-  │
-  ▼
-Extract Email Content
-  │
-  ▼
-POST Request
-  │
-  ▼
-Spring Boot Backend
-  │
-  ▼
-Groq AI
-  │
-  ▼
-Generated Reply
-  │
-  ▼
-Gmail Compose Box
-MutationObserver Architecture
-
-Gmail dynamically renders its interface.
-
-Because compose windows can appear after the initial page load, the extension uses JavaScript's MutationObserver.
-
-Gmail Page
-    │
-    ▼
-DOM Changes
-    │
-    ▼
-MutationObserver
-    │
-    ▼
-Detect Compose Elements
-    │
-    ▼
-Find Compose Toolbar
-    │
-    ▼
-Inject AI Reply Button
-
-This allows the extension to work with Gmail's dynamically generated UI.
-
-Email Extraction
-
-When the user clicks the AI Reply button, the extension searches for the latest email content using Gmail's rendered DOM.
-
-The extension extracts the latest available email content and sends it to the Spring Boot API.
-
-The request contains:
-
-{
-  "emailContent": "Original email content",
-  "tone": "professional"
-}
-Generated Reply Insertion
-
-After the backend returns the generated response:
-
-Groq
-  ↓
-Spring Boot
-  ↓
-Chrome Extension
-  ↓
-Gmail Compose Editor
-
-The extension inserts the generated reply into the Gmail compose editor.
-
-The user can then:
-
-Review the response
-Edit the response
-Add additional information
-Send the email
-Chrome Extension Structure
-chrome-extension/
+```text
+email-writer-ext/
 │
 ├── manifest.json
 ├── content.js
@@ -380,656 +225,1157 @@ chrome-extension/
 │
 └── icons/
     └── logo.png
-Chrome Extension Installation
+```
 
-The extension can be installed locally using Chrome's Developer Mode.
+---
 
-Step 1
+# 🔍 MutationObserver Architecture
 
-Open:
+Gmail is a dynamic web application.
 
-chrome://extensions
-Step 2
+The compose window may not exist when the Gmail page initially loads.
 
-Enable:
+Therefore, the extension uses `MutationObserver`.
 
-Developer mode
-Step 3
+```text
+Gmail Page Loads
+       │
+       ▼
+Content Script Starts
+       │
+       ▼
+MutationObserver
+       │
+       │ Watches DOM
+       ▼
+Gmail Creates Compose Window
+       │
+       ▼
+Observer Detects New Elements
+       │
+       ▼
+injectButton()
+       │
+       ▼
+✨ AI Reply Button
+```
 
-Click:
+The observer watches:
 
-Load unpacked
-Step 4
+```javascript
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+```
 
-Select:
+### Why MutationObserver?
 
-chrome-extension/
+A normal page-load event is not sufficient because Gmail can dynamically create a compose window after the page has already loaded.
 
-from this repository.
+`MutationObserver` allows the extension to react to these DOM changes.
 
-Step 5
+---
 
-Open Gmail and open an email.
+# 📧 Email Content Extraction
 
-The:
+The extension identifies the email content using Gmail's DOM.
 
-✨ AI Reply
+Conceptually:
 
-button should appear in the compose interface.
+```text
+Gmail Conversation
+        │
+        ├── Email 1
+        ├── Email 2
+        ├── Email 3
+        └── Latest Email
+                │
+                ▼
+          Extract Text
+                │
+                ▼
+          innerText.trim()
+```
 
-3. React Frontend
+The latest email is selected so the AI can generate a reply based on the most recent message.
 
-The project also includes a standalone React frontend.
+---
 
-The React application allows users to enter an email manually and generate an AI reply without using Gmail.
+# 🖥️ React Frontend Architecture
 
-React Architecture
-React UI
-   │
-   ▼
-User enters email
-   │
-   ▼
-Select tone
-   │
-   ▼
-Generate Reply
-   │
-   ▼
-HTTP POST
-   │
-   ▼
-Spring Boot API
-   │
-   ▼
-Groq AI
-   │
-   ▼
-Generated Reply
-   │
-   ▼
-React UI
-   │
-   ▼
-Copy to Clipboard
-React Features
-Email content input
-Tone selection
-AI reply generation
-Loading state
-Error handling
-Generated response display
-Copy to clipboard
-REST API integration
-React Setup
+The project also contains a standalone React application.
 
-Navigate to:
-
-react-frontend/
-
-Install dependencies:
-
-npm install
-
-Run development server:
-
-npm run dev
-
-Build production version:
-
-npm run build
-4. Complete User Workflow
-Gmail Workflow
-
-The complete Gmail workflow is:
-
-1. User opens Gmail
-          ↓
-2. User opens an email
-          ↓
-3. Gmail renders the compose interface
-          ↓
-4. MutationObserver detects the compose window
-          ↓
-5. Chrome Extension injects AI Reply button
-          ↓
-6. User clicks AI Reply
-          ↓
-7. Extension extracts email content
-          ↓
-8. Extension sends HTTP POST request
-          ↓
-9. Spring Boot receives the request
-          ↓
-10. Spring Boot constructs AI request
-          ↓
-11. Backend sends request to Groq
-          ↓
-12. Groq generates email reply
-          ↓
-13. Groq response returns to Spring Boot
-          ↓
-14. Spring Boot returns generated reply
-          ↓
-15. Chrome Extension receives response
-          ↓
-16. Extension inserts response into Gmail
-          ↓
-17. User reviews and edits the reply
-          ↓
-18. User sends the email
-React Workflow
-User
-  ↓
-React Frontend
-  ↓
-Email + Tone
-  ↓
-Spring Boot REST API
-  ↓
-Groq AI
-  ↓
-Generated Reply
-  ↓
-React Frontend
-  ↓
-Copy Response
-Security Architecture
-
-One of the important architectural decisions in this project is keeping the Groq API key on the backend.
-
-Secure Flow
-React / Chrome Extension
-          │
-          │ Email Content
-          ▼
-Spring Boot Backend
-          │
-          │ GROQ_API_KEY
-          ▼
-Groq API
-
-The client never communicates directly with Groq.
-
-The API key is stored as an environment variable on the backend.
-
-Environment Variables
-
-The backend uses environment variables for sensitive configuration.
-
-Example:
-
-GROQ_API_KEY=your_api_key
-GROQ_API_URL=https://api.groq.com/openai/v1/chat/completions
-GROQ_MODEL=openai/gpt-oss-20b
-
-Do not commit .env files to GitHub.
-
-The .gitignore file excludes environment files.
-
-Local Backend Setup
-
-Navigate to:
-
-spring-boot-backend/
-
-Set the required environment variables.
-
-Then run:
-
-./mvnw spring-boot:run
-
-On Windows:
-
-mvnw.cmd spring-boot:run
-
-The backend runs on:
-
-http://localhost:8080
-Maven Build
-
-To build the Spring Boot application:
-
-./mvnw clean package
-
-Windows:
-
-mvnw.cmd clean package
-Docker
-
-The Spring Boot backend is Dockerized.
-
-Dockerfile location:
-
-spring-boot-backend/Dockerfile
-
-Build the image from the backend directory:
-
-docker build -t automated-email-writer .
-
-Run the container:
-
-docker run -p 8080:8080 \
-  -e GROQ_API_KEY=your_api_key \
-  automated-email-writer
-Deployment Architecture
-
-The production architecture is:
-
-                    Internet
-                       │
-          ┌────────────┴────────────┐
-          │                         │
-          ▼                         ▼
-   React Frontend             Gmail + Extension
-          │                         │
-          │                         │
-          └──────────┬──────────────┘
+```text
+              React Application
                      │
                      ▼
-             Render Backend
+              User Interface
+                     │
+          ┌──────────┴──────────┐
+          │                     │
+          ▼                     ▼
+   Email Content             Tone
+      Input                 Selection
+          │                     │
+          └──────────┬──────────┘
                      │
                      ▼
-              Spring Boot API
+              Generate Reply
+                     │
+                     ▼
+                 fetch()
+                     │
+                     ▼
+             Spring Boot API
                      │
                      ▼
                   Groq AI
-Production Backend
+                     │
+                     ▼
+             Generated Reply
+                     │
+                     ▼
+              React UI Output
+```
 
-The Spring Boot backend is deployed on Render.
+The React application does **not** communicate directly with Groq.
 
-Production API:
+It communicates with the Spring Boot backend.
 
-https://automated-email-writer.onrender.com
+---
 
-Generate endpoint:
+# ⚙️ Backend Architecture
 
-https://automated-email-writer.onrender.com/api/email/generate
+The backend follows a layered architecture.
 
-The Groq API key is configured through Render environment variables.
+```text
+             HTTP Request
+                  │
+                  ▼
+       ┌────────────────────┐
+       │ REST Controller    │
+       │                    │
+       │ EmailGenerator     │
+       │ Controller         │
+       └─────────┬──────────┘
+                 │
+                 ▼
+       ┌────────────────────┐
+       │ Service Layer      │
+       │                    │
+       │ EmailGenerator     │
+       │ Service            │
+       └─────────┬──────────┘
+                 │
+                 ▼
+       ┌────────────────────┐
+       │ Groq API Client    │
+       └─────────┬──────────┘
+                 │
+                 ▼
+            Groq API
+                 │
+                 ▼
+          AI Generated Text
+                 │
+                 ▼
+            Controller
+                 │
+                 ▼
+          HTTP Response
+```
 
-Render Configuration
+---
 
-The backend is located inside:
+# 🎛️ Controller Layer
 
-spring-boot-backend/
+The controller exposes the REST API.
 
-For deployment, the backend service should use:
+Endpoint:
 
-Root Directory:
-spring-boot-backend
-
-The backend uses:
-
-server.port=${PORT:8080}
-
-This allows Render to provide the production port through the PORT environment variable.
-
-Technology Stack
-Backend
-Java 21
-Spring Boot
-Spring Web
-REST API
-WebClient
-Maven
-Lombok
-AI
-Groq API
-OpenAI-compatible Chat Completions API
-openai/gpt-oss-20b
-Frontend
-React
-JavaScript
-Vite
-Material UI
-Chrome Extension
-JavaScript
-Chrome Extension Manifest V3
-MutationObserver
-Gmail DOM integration
-DevOps
-Docker
-Render
-Git
-GitHub
-Maven
-npm
-API Request Flow
-Client
-  │
-  │
-  │ POST /api/email/generate
-  │
-  ▼
-Spring Boot Controller
-  │
-  ▼
-EmailGeneratorService
-  │
-  ▼
-WebClient
-  │
-  ▼
-Groq API
-  │
-  ▼
-AI Generated Reply
-  │
-  ▼
-Spring Boot
-  │
-  ▼
-Client
-Example API Request
+```text
 POST /api/email/generate
-Content-Type: application/json
-{
-  "emailContent": "Hello Yashasvi, we would like to schedule an interview for the AI/ML internship.",
-  "tone": "professional"
-}
-
-Example generated response:
-
-Dear Rahul,
-
-Thank you for reaching out regarding the AI/ML internship opportunity. I appreciate the opportunity and would be happy to discuss my experience and availability.
-
-Please let me know a convenient date and time for the interview.
-
-Best regards,
-Yashasvi
-Testing
-Backend Testing
-
-The API can be tested using:
-
-Postman
-cURL
-React frontend
-Chrome Extension
+```
 
 Example:
 
-curl -X POST \
-  https://automated-email-writer.onrender.com/api/email/generate \
-  -H "Content-Type: application/json" \
-  -d "{\"emailContent\":\"Thank you for contacting me.\",\"tone\":\"friendly\"}"
-React Testing
+```http
+POST /api/email/generate
+Content-Type: application/json
+```
 
-Run:
+Request:
 
-npm install
-npm run dev
+```json
+{
+  "emailContent": "Hello, thank you for reaching out to us.",
+  "tone": "professional"
+}
+```
 
-Then open the Vite development URL shown in the terminal.
+Response:
 
-Test:
+```text
+Thank you for reaching out. I appreciate your message...
+```
 
-Enter email
-    ↓
-Select tone
-    ↓
-Generate Reply
-    ↓
-AI Response
-    ↓
-Copy to Clipboard
-Chrome Extension Testing
+---
 
-Open:
+# 🧠 Service Layer
 
-chrome://extensions
+The service layer contains the main AI logic.
 
-Enable Developer Mode and load:
+Responsibilities:
 
-chrome-extension/
+* Receive email content
+* Receive selected tone
+* Build AI prompt
+* Send request to Groq
+* Process Groq response
+* Return generated reply
 
-Then:
+Architecture:
 
-Open Gmail
-    ↓
-Open an email
-    ↓
-Open compose/reply
-    ↓
-Click AI Reply
-    ↓
-Wait for generation
-    ↓
-Generated response appears
-Error Handling
+```text
+EmailRequest
+     │
+     ├── emailContent
+     │
+     └── tone
+          │
+          ▼
+   Prompt Construction
+          │
+          ▼
+       Groq API
+          │
+          ▼
+    AI Generated Reply
+```
 
-The backend handles errors from the AI service and returns appropriate HTTP responses.
+---
 
-The Chrome Extension also handles:
+# 🤖 Groq Integration
 
-Missing email content
-Missing Gmail compose box
-Backend errors
-API errors
-Network errors
+The backend communicates with the Groq API using the OpenAI-compatible chat completion API.
 
-The React frontend handles:
+Endpoint:
 
-API errors
-Loading states
-Failed requests
-Empty input
-Current Limitations
+```text
+https://api.groq.com/openai/v1/chat/completions
+```
 
-The current implementation has some limitations:
+The backend sends:
 
-Gmail DOM selectors may change if Gmail changes its interface.
-Chrome Extension currently uses a default professional tone.
-Authentication is not implemented.
-Rate limiting is not implemented.
-User-specific conversation history is not implemented.
-The backend currently does not maintain persistent email history.
-Render's free service may experience cold starts after inactivity.
-AI-generated responses should always be reviewed before sending.
-Security Considerations
+```text
+Model
+   +
+System Prompt
+   +
+Email Content
+   +
+Tone
+   ↓
+Groq
+```
 
-The project follows a backend-centered AI architecture.
+Groq returns:
 
-Important security principles:
+```text
+AI Generated Response
+```
 
-API keys are stored only on the backend.
-Secrets are managed through environment variables.
-.env files are excluded from Git.
-Groq credentials are never exposed to the browser.
-React communicates with Spring Boot instead of directly communicating with Groq.
-Chrome Extension communicates with the backend instead of directly communicating with Groq.
+The backend extracts the generated content and sends it back to the client.
 
-For a public production release, additional security features should be added.
+---
 
-Future Improvements
+# 🔐 Security Architecture
 
-Planned improvements include:
+One of the important design decisions in this project is keeping the AI API key on the backend.
 
-User authentication
-User accounts
-Multiple AI models
-Custom reply styles
-Better context awareness
-Conversation history
-Gmail thread understanding
-Rate limiting
-Request logging
-Usage analytics
-Improved Gmail DOM handling
-Better error recovery
-Streaming AI responses
-Production monitoring
-Chrome Web Store publication
-Key Engineering Decisions
-Backend-Centered AI Communication
+### ❌ Not used
 
-The Groq API is accessed through Spring Boot instead of directly from the frontend.
-
-This prevents exposing the API key and provides a centralized place for:
-
-Prompt construction
-Validation
-Error handling
-Authentication
-Rate limiting
-AI provider changes
-Chrome Extension for Gmail Integration
-
-The Chrome Extension handles Gmail-specific functionality.
-
-The backend remains independent of Gmail's DOM.
-
-Gmail Integration
-       ↓
+```text
 Chrome Extension
-       ↓
-REST API
-       ↓
-Spring Boot
-       ↓
-AI Provider
+      │
+      ▼
+   Groq API
+      ▲
+      │
+  API KEY EXPOSED
+```
 
-This separation keeps responsibilities clear.
+This would expose the API key to users.
 
-React as a Separate Client
+### ✅ Actual architecture
 
-The React frontend provides an independent interface for the same backend API.
-
-Both clients use the same backend:
-
-                    ┌───────────────┐
-                    │ Spring Boot   │
-                    │ REST API      │
-                    └───────┬───────┘
-                            │
-             ┌──────────────┴──────────────┐
-             │                             │
-             ▼                             ▼
-      React Frontend               Chrome Extension
-
-This allows the backend to serve multiple clients.
-
-Complete Data Flow
-                    USER
-                     │
-                     ▼
-                  Gmail
-                     │
-                     ▼
-            Chrome Extension
-                     │
-             Extract Email
-                     │
-                     ▼
-              HTTP Request
-                     │
-                     ▼
-          Spring Boot Backend
-                     │
-              Build Prompt
-                     │
-                     ▼
-                 Groq AI
-                     │
-            Generate Reply
-                     │
-                     ▼
-          Spring Boot Backend
-                     │
-              HTTP Response
-                     │
-                     ▼
-            Chrome Extension
-                     │
-             Insert Response
-                     │
-                     ▼
-                  Gmail
-                     │
-                     ▼
-               User Review
-                     │
-                     ▼
-              Send Email
-Production Workflow
-Gmail
-  ↓
+```text
 Chrome Extension
-  ↓
-HTTPS
-  ↓
-Render
-  ↓
-Spring Boot
-  ↓
+      │
+      │ No Groq Key
+      ▼
+Spring Boot Backend
+      │
+      │ GROQ_API_KEY
+      ▼
 Groq API
-  ↓
+```
+
+The key is stored using an environment variable:
+
+```properties
+groq.api.key=${GROQ_API_KEY:}
+```
+
+The actual key is configured on Render and is never committed to GitHub.
+
+---
+
+# 🔄 Complete Request Flow
+
+When a user clicks **AI Reply**:
+
+```text
+1. User opens Gmail
+          ↓
+2. Chrome Extension loads
+          ↓
+3. MutationObserver monitors Gmail
+          ↓
+4. Compose window appears
+          ↓
+5. AI Reply button is injected
+          ↓
+6. User clicks AI Reply
+          ↓
+7. Latest email is extracted
+          ↓
+8. Extension creates JSON request
+          ↓
+9. POST /api/email/generate
+          ↓
+10. Spring Boot receives request
+          ↓
+11. Controller passes request to Service
+          ↓
+12. Service creates AI prompt
+          ↓
+13. Backend sends request to Groq
+          ↓
+14. Groq generates reply
+          ↓
+15. Backend extracts generated content
+          ↓
+16. Response returned to Extension
+          ↓
+17. Extension receives generated reply
+          ↓
+18. Gmail compose box is located
+          ↓
+19. Generated reply is inserted
+          ↓
+20. User reviews and sends email
+```
+
+---
+
+# 🌐 Deployment Architecture
+
+The backend is containerized using Docker and deployed on Render.
+
+```text
+                    GitHub
+                      │
+                      │ Source Code
+                      ▼
+                Docker Build
+                      │
+                      ▼
+           Java 21 Docker Image
+                      │
+                      ▼
+                Spring Boot
+                      │
+                      ▼
+                   Render
+                      │
+                      │ HTTPS
+                      ▼
+       automated-email-writer.onrender.com
+                      │
+                      ▼
+                  Groq API
+```
+
+---
+
+# 🐳 Docker Architecture
+
+The backend uses Java 21.
+
+Docker workflow:
+
+```text
+Dockerfile
+     │
+     ▼
+Java 21 Base Image
+     │
+     ▼
+Copy Maven Project
+     │
+     ▼
+Maven Build
+     │
+     ▼
+Spring Boot JAR
+     │
+     ▼
+Run Application
+```
+
+The application is exposed through port:
+
+```text
+8080
+```
+
+Render provides the production port through the `PORT` environment variable.
+
+---
+
+# ☁️ Production Architecture
+
+```text
+                        INTERNET
+                           │
+              ┌────────────┴────────────┐
+              │                         │
+              ▼                         ▼
+       Gmail + Extension           React Web App
+              │                         │
+              │ HTTPS                   │ HTTPS
+              └────────────┬────────────┘
+                           │
+                           ▼
+                ┌──────────────────────┐
+                │      Render          │
+                │                      │
+                │   Spring Boot API    │
+                └──────────┬───────────┘
+                           │
+                           │ HTTPS
+                           ▼
+                ┌──────────────────────┐
+                │       Groq API       │
+                │                      │
+                │    AI Model          │
+                └──────────────────────┘
+```
+
+---
+
+# 🛠️ Technology Stack
+
+| Layer               | Technology       |
+| ------------------- | ---------------- |
+| Frontend            | React            |
+| UI                  | Material UI      |
+| Backend             | Spring Boot      |
+| Language            | Java 21          |
+| AI                  | Groq API         |
+| Browser Integration | Chrome Extension |
+| Extension           | Manifest V3      |
+| HTTP Communication  | REST API         |
+| Containerization    | Docker           |
+| Deployment          | Render           |
+| Version Control     | Git + GitHub     |
+| Development         | VS Code          |
+
+---
+
+# 📁 Project Structure
+
+The project is divided into three repositories.
+
+## Backend
+
+```text
+Automated-email-writer/
+│
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/email/writer/app/
+│       │       │
+│       │       ├── EmailGeneratorController.java
+│       │       ├── EmailGeneratorService.java
+│       │       ├── EmailRequest.java
+│       │       └── ...
+│       │
+│       └── resources/
+│           └── application.properties
+│
+├── Dockerfile
+├── pom.xml
+├── mvnw
+├── .gitignore
+└── README.md
+```
+
+---
+
+## React Frontend
+
+```text
+email-writer-react/
+│
+├── src/
+│   ├── App.jsx
+│   ├── App.css
+│   └── main.jsx
+│
+├── public/
+├── package.json
+├── vite.config.js
+├── index.html
+└── README.md
+```
+
+---
+
+## Chrome Extension
+
+```text
+email-writer-ext/
+│
+├── manifest.json
+├── content.js
+├── content.css
+│
+└── icons/
+    └── logo.png
+```
+
+---
+
+# 🔌 API Documentation
+
+## Generate Email Reply
+
+### Endpoint
+
+```text
+POST /api/email/generate
+```
+
+### Local
+
+```text
+http://localhost:8080/api/email/generate
+```
+
+### Production
+
+```text
+https://automated-email-writer.onrender.com/api/email/generate
+```
+
+### Headers
+
+```http
+Content-Type: application/json
+```
+
+### Request
+
+```json
+{
+  "emailContent": "Hello, I wanted to follow up regarding the internship opportunity.",
+  "tone": "professional"
+}
+```
+
+### Response
+
+```text
+Thank you for following up regarding the internship opportunity...
+```
+
+---
+
+# 🎨 Supported Tones
+
+The frontend currently supports tones such as:
+
+```text
+Professional
+Casual
+Friendly
+```
+
+The tone is sent to the backend and incorporated into the AI generation process.
+
+---
+
+# 🚀 Running the Backend Locally
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/YashasviRajput13/Automated-email-writer.git
+```
+
+```bash
+cd Automated-email-writer
+```
+
+## 2. Configure Environment Variables
+
+Create a `.env` file or configure the environment variable:
+
+```env
+GROQ_API_KEY=your_groq_api_key
+GROQ_API_URL=https://api.groq.com/openai/v1/chat/completions
+GROQ_MODEL=openai/gpt-oss-20b
+```
+
+Do not commit the `.env` file.
+
+## 3. Run with Maven
+
+```bash
+./mvnw spring-boot:run
+```
+
+On Windows:
+
+```bash
+mvnw.cmd spring-boot:run
+```
+
+The backend will run on:
+
+```text
+http://localhost:8080
+```
+
+---
+
+# ⚛️ Running React Frontend
+
+```bash
+git clone <YOUR_REACT_REPOSITORY>
+```
+
+```bash
+cd email-writer-react
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start development server:
+
+```bash
+npm run dev
+```
+
+The application will normally be available at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# 🧩 Installing Chrome Extension Locally
+
+Since the extension is a Chrome Extension, it can be loaded manually for development.
+
+### Step 1
+
+Open Chrome.
+
+### Step 2
+
+Go to:
+
+```text
+chrome://extensions
+```
+
+### Step 3
+
+Enable:
+
+```text
+Developer mode
+```
+
+### Step 4
+
+Click:
+
+```text
+Load unpacked
+```
+
+### Step 5
+
+Select:
+
+```text
+email-writer-ext/
+```
+
+### Step 6
+
+Open Gmail:
+
+```text
+https://mail.google.com
+```
+
+Open an email and click:
+
+```text
+✨ AI Reply
+```
+
+---
+
+# 🧪 Testing
+
+The backend can be tested using Postman.
+
+Example request:
+
+```http
+POST https://automated-email-writer.onrender.com/api/email/generate
+```
+
+Body:
+
+```json
+{
+  "emailContent": "Thank you for your application. We will get back to you soon.",
+  "tone": "professional"
+}
+```
+
+Expected result:
+
+```text
+An AI-generated email reply
+```
+
+---
+
+# 🔒 Security Considerations
+
+The project follows a backend-mediated AI architecture.
+
+### API Key
+
+The Groq API key is stored as:
+
+```text
+GROQ_API_KEY
+```
+
+It is not stored in:
+
+* React code
+* Chrome Extension
+* GitHub repository
+* Client-side JavaScript
+
+### Recommended future improvements
+
+For production-scale usage, the project should also implement:
+
+* Authentication
+* API rate limiting
+* Request validation
+* Abuse prevention
+* Usage monitoring
+* Logging
+* CORS restrictions
+* User-specific API quotas
+
+---
+
+# ⚠️ Current Limitations
+
+Because Gmail is a third-party application, its internal DOM structure can change.
+
+The extension currently depends on Gmail DOM selectors such as:
+
+```text
+.btC
+.ADH
+.a3s.aiL
+[g_editable="true"]
+```
+
+If Gmail changes these selectors, the extension may require updates.
+
+Other limitations:
+
+* Backend free-tier hosting may have cold starts.
+* AI responses depend on the selected Groq model.
+* Very long emails may require prompt/token management.
+* Multiple users would require backend rate limiting and authentication.
+
+---
+
+# 🔮 Future Improvements
+
+Potential future versions could include:
+
+### 1. Multiple AI tones
+
+```text
+Professional
+Friendly
+Casual
+Formal
+Apologetic
+Persuasive
+Concise
+```
+
+### 2. Reply length control
+
+```text
+Short
+Medium
+Detailed
+```
+
+### 3. Multi-language support
+
+Generate replies in:
+
+```text
+English
+Hindi
+Spanish
+French
+German
+etc.
+```
+
+### 4. Gmail-aware context
+
+Use conversation history to generate more context-aware responses.
+
+### 5. Authentication
+
+Allow users to create accounts and maintain personal preferences.
+
+### 6. Rate Limiting
+
+Prevent abuse of the public API.
+
+### 7. Chrome Web Store Distribution
+
+Publish the extension officially for easier installation.
+
+### 8. AI Reply Suggestions
+
+Instead of generating one response:
+
+```text
+┌────────────────────────────┐
+│ Professional Reply         │
+├────────────────────────────┤
+│ Friendly Reply             │
+├────────────────────────────┤
+│ Short Reply                │
+└────────────────────────────┘
+```
+
+---
+
+# 🧠 Key Engineering Decisions
+
+## Why Spring Boot?
+
+Spring Boot provides:
+
+* REST API development
+* Clean layered architecture
+* Dependency injection
+* Easy integration with external APIs
+* Production-ready Java backend
+
+---
+
+## Why React?
+
+React provides:
+
+* Component-based UI
+* Fast development
+* Easy API integration
+* Good ecosystem
+* Reusable UI components
+
+---
+
+## Why Chrome Extension?
+
+A normal web application cannot directly modify Gmail's interface.
+
+The Chrome Extension allows the project to interact with Gmail's page and provide an integrated AI experience.
+
+---
+
+## Why MutationObserver?
+
+Gmail dynamically creates UI elements.
+
+`MutationObserver` allows the extension to detect those changes without continuously polling the DOM.
+
+---
+
+## Why Groq?
+
+Groq provides a fast inference API and supports an OpenAI-compatible chat completion interface.
+
+---
+
+## Why Docker?
+
+Docker makes the backend environment reproducible.
+
+Instead of depending on the deployment server's Java configuration:
+
+```text
+Application
+    +
+Dependencies
+    +
+Java Runtime
+        ↓
+    Docker Image
+```
+
+The same container can be deployed consistently.
+
+---
+
+# 🔥 Key Technical Highlights
+
+The major technical concepts demonstrated by this project are:
+
+```text
+Chrome Extension Development
+        +
+DOM Manipulation
+        +
+MutationObserver
+        +
+REST API
+        +
 Spring Boot
-  ↓
-Chrome Extension
-  ↓
-Gmail
-Repository
+        +
+Layered Architecture
+        +
+External AI API Integration
+        +
+Environment Variables
+        +
+Docker
+        +
+Cloud Deployment
+        +
+React
+```
+
+---
+
+# 📊 Complete Data Flow
+
+```text
+┌──────────────┐
+│     User     │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│    Gmail     │
+└──────┬───────┘
+       │
+       │ Email Content
+       ▼
+┌──────────────────┐
+│ Chrome Extension │
+│                  │
+│ MutationObserver │
+│       +          │
+│ Content Script   │
+└────────┬─────────┘
+         │
+         │ HTTPS POST
+         │
+         ▼
+┌──────────────────────┐
+│   Spring Boot API    │
+│                      │
+│ EmailGenerator       │
+│ Controller           │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│   Service Layer      │
+│                      │
+│ Prompt Construction  │
+└──────────┬───────────┘
+           │
+           │ HTTPS
+           ▼
+┌──────────────────────┐
+│       Groq API       │
+│                      │
+│      AI Model        │
+└──────────┬───────────┘
+           │
+           │ Generated Text
+           ▼
+┌──────────────────────┐
+│   Spring Boot API    │
+└──────────┬───────────┘
+           │
+           │ HTTP Response
+           ▼
+┌──────────────────────┐
+│  Chrome Extension    │
+└──────────┬───────────┘
+           │
+           │ Insert Text
+           ▼
+┌──────────────────────┐
+│ Gmail Compose Box    │
+└──────────────────────┘
+```
+
+---
+
+# 🌐 Production URLs
+
+### Backend API
+
+```text
+https://automated-email-writer.onrender.com
+```
+
+### API Endpoint
+
+```text
+https://automated-email-writer.onrender.com/api/email/generate
+```
+
+---
+
+# 📦 Repository Structure
+
+The project is maintained using separate repositories:
+
+### Backend
+
+```text
+Automated-email-writer
+```
 
 GitHub:
 
+```text
 https://github.com/YashasviRajput13/Automated-email-writer
-Project Goals
+```
 
-The main goals of this project are:
+### React Frontend
 
-Reduce the time required to write email replies.
-Provide contextual AI-generated responses.
-Integrate AI directly into Gmail.
-Keep AI credentials secure.
-Demonstrate a complete full-stack AI application.
-Demonstrate REST API architecture.
-Demonstrate Chrome Extension development.
-Demonstrate AI API integration.
-Demonstrate Docker-based backend deployment.
-Maintain a scalable separation between clients and backend services.
-Author
+```text
+email-writer-react
+```
 
-Yashasvi Rajput
+### Chrome Extension
+
+```text
+email-writer-ext
+```
+
+---
+
+# 👨‍💻 Author
+
+**Yashasvi Rajput**
 
 B.Tech — Artificial Intelligence & Machine Learning
 
-Project Summary
+Interested in:
 
-AI Email Writer Assistant combines:
+* Artificial Intelligence
+* Machine Learning
+* Agentic AI
+* Backend Development
+* Full Stack Development
+* AI-powered applications
 
-React
-   +
-Spring Boot
-   +
-Groq AI
-   +
-Chrome Extension
-   +
-Gmail
-   +
-Docker
-   +
-Render
+---
 
-to create an AI-powered email reply generation system.
+# ⭐ Project Highlights
 
-The core workflow remains:
+> **AI-powered email generation + Gmail integration + Chrome Extension + Spring Boot + React + Groq + Docker + Cloud Deployment**
 
-Open Email
-     ↓
-Click AI Reply
-     ↓
-Extension extracts email
-     ↓
-Spring Boot REST API
-     ↓
-Groq AI
-     ↓
-Generated Reply
-     ↓
-Automatically inserted into Gmail
-     ↓
-User reviews and sends
+The project demonstrates how an AI service can be integrated into an existing application such as Gmail while keeping the AI credentials protected behind a backend API.
+
+---
+
+# 📜 License
+
+This project is intended for educational and demonstration purposes.
+
+````
+
+### One change I strongly recommend
+
+For your **GitHub README**, put a visual architecture diagram near the top rather than relying only on ASCII diagrams.
+
+Your README structure should visually look like:
+
+```text
+AI Email Writer
+       ↓
+Project Demo / GIF
+       ↓
+Features
+       ↓
+Architecture Diagram ⭐
+       ↓
+How It Works
+       ↓
+Chrome Extension Architecture
+       ↓
+Backend Architecture
+       ↓
+React Architecture
+       ↓
+API Documentation
+       ↓
+Security
+       ↓
+Docker + Deployment
+       ↓
+Installation
+       ↓
+Future Improvements
+       
