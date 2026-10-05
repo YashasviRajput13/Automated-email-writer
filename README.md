@@ -34,7 +34,7 @@ Spring Boot backend :8080
 Groq Chat Completions API
 ```
 
-The current workspace repository contains the Spring Boot backend. The Gmail extension is maintained in the adjacent local `email-writer-ext` directory and can be loaded into Chrome as an unpacked extension.
+The repository contains the Spring Boot backend and the Gmail extension in the `chrome-extension` directory. The extension can be loaded into Chrome as an unpacked extension.
 
 ## Local Setup
 
@@ -92,7 +92,7 @@ The response body is the generated reply text. The endpoint returns `400` for em
 2. Open `chrome://extensions` in Chrome.
 3. Enable **Developer mode**.
 4. Choose **Load unpacked**.
-5. Select the local `email-writer-ext` directory.
+5. Select the `chrome-extension` directory.
 6. Open Gmail, open or reply to an email, and use the **AI Reply** button.
 
 The extension reads the latest email content from Gmail and sends this JSON to the backend:
